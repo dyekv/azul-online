@@ -1,17 +1,13 @@
-import React,{useState,useEffect} from 'react';
-import Portrait from './components/Portrait'
+import React from 'react';
+import PortraitChacker from './components/Portrait'
+import Login from './pages/Login'
 
 const App = () => {
-  const [isPortrait,setIsPortrait] = useState(window.innerHeight > window.innerWidth)
-  useEffect(()=>{
-    window.addEventListener('resize',()=>{
-      setIsPortrait(window.innerHeight > window.innerWidth)
-    })
-  })
-
   return (
     <div className="App">
-      {isPortrait ? <Portrait/> : '横'}
+      <PortraitChacker>
+        <Login/>
+      </PortraitChacker>
     </div>
   );
 }
