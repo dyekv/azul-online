@@ -10,8 +10,8 @@ const Portrait = ():JSX.Element => (
         backgroundColor:'whitesmoke'
     }}>
         <div style={{paddingBottom:50}}>
-            <img src='./landscape.png' style={{width:300}}/>
-            <p style={{textAlign:'center'}}>画面を横にして遊んでね！ m(_ _)m</p>
+            <img src='./landscape.png' alt='横画面にして遊んでください' style={{width:300}}/>
+            <p style={{textAlign:'center'}}>画面を横にして遊んでね！</p>
         </div>
     </div>
 )
