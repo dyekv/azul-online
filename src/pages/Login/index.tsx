@@ -1,4 +1,4 @@
-import {Box,Input,Button} from '@chakra-ui/react'
+import {Box,Input,Button,Image} from '@chakra-ui/react'
 import Center from '../../components/ui/Center'
 
 const Login = () => {
@@ -9,6 +9,7 @@ const Login = () => {
             p="20" 
             textAlign='center'
         >
+            <Image src={process.env.PUBLIC_URL+'/logo.png'} alt='logo' maxW='400'/>
         <Input 
             placeholder="名前を入力してください"
             m='5'
