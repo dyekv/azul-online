@@ -1,7 +1,7 @@
 import React,{useEffect, useState} from 'react';
 import {ChakraProvider} from '@chakra-ui/react'
 import PortraitChacker from './components/Portrait'
-import Login from './pages/Login'
+import Router from './components/Router'
 import localForage from 'localforage'
 import {User} from './interfaces'
 
@@ -26,7 +26,7 @@ const App = () => {
       <ChakraProvider>
       <PortraitChacker>
         {user}
-        <Login/>
+        <Router/>
       </PortraitChacker>
       </ChakraProvider>
     </div>
