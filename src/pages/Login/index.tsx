@@ -5,11 +5,11 @@ const Login = () => {
     return (
     <Center>
         <Box 
-            m="20" 
-            p="20" 
+            m="20px" 
+            p="20px" 
             textAlign='center'
         >
-            <Image src={process.env.PUBLIC_URL+'/logo.png'} alt='logo' maxW='400'/>
+            <Image src={process.env.PUBLIC_URL+'/logo.png'} alt='logo' maxW='400px'/>
         <Input 
             placeholder="名前を入力してください"
             m='5'
