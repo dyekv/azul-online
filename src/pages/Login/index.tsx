@@ -17,10 +17,9 @@ const Login = () => {
             })
             return null
         }
-        // TODO firebaseに登録、IDを取得し、localforageに保存する
         const addUser = await firestore.collection('users').add({name})
-        console.log({name,id:addUser.id})
         localforage.setItem('user',{id:addUser.id,name})
+        // TODO 部屋一覧へ遷移する
     }
 
     return (
