@@ -1,12 +1,17 @@
-import {Box,Input,Button,Image,useToast} from '@chakra-ui/react'
+import {Box,Input,Button,Image,useToast,Spinner} from '@chakra-ui/react'
 import Center from '../../components/ui/Center'
-import {useState} from 'react'
+import {useState,useContext} from 'react'
 import {firestore} from '../../firebase'
 import localforage from 'localforage'
+import {useHistory} from 'react-router-dom'
+import {UserContext} from '../../App'
 
 const Login = () => {
     const [name,setName] = useState('')
+    const [loading,setLoading] = useState(false)
+    const [user,setUser] = useContext(UserContext)
     const toast = useToast()
+    const history = useHistory()
     const onSubmit = async() => {
         if(name === ''){
             toast({
@@ -17,9 +22,23 @@ const Login = () => {
             })
             return null
         }
+        setLoading(true)
         const addUser = await firestore.collection('users').add({name})
-        localforage.setItem('user',{id:addUser.id,name})
-        // TODO 部屋一覧へ遷移する
+        const userObj = {id:addUser.id,name,playRoom:''}
+        localforage.setItem('user',userObj)
+        setUser(userObj)
+        history.push('/rooms')
+    }
+
+    if(loading){
+        return <Center>
+            <Spinner
+                thickness="2px"
+                speed="1s"
+                emptyColor="gray.200"
+                color="#6066CE"
+            />
+        </Center>
     }
 
     return (
