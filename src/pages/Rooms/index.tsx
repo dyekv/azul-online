@@ -1,9 +1,9 @@
 import {firestore} from '../../firebase'
 import {useState,useEffect} from 'react'
-import {Box,Button, propNames} from '@chakra-ui/react'
+import {Box,Button} from '@chakra-ui/react'
 import Header from '../../components/Header'
 import {Input,InputGroup,InputLeftElement} from '@chakra-ui/react'
-import {Search2Icon} from '@chakra-ui/icons'
+import {Search2Icon,LockIcon} from '@chakra-ui/icons'
 
 const SearchInput = ():JSX.Element => {
     return (
@@ -19,6 +19,7 @@ const SearchInput = ():JSX.Element => {
 interface Room {
     name:string,
     members:string[]
+    password:string
 }
 
 interface RoomItemProps{
@@ -29,17 +30,11 @@ const RoomItem:React.FC<RoomItemProps> = (props:RoomItemProps) => {
     const {room} = props
     return (
         <Box shadow='md' m='10px' border='1px solid #DDD' borderRadius='5px' p='30px 10px'>
+            <LockIcon color={room.password !== '' ?'#5F65CC':'white'} w={12} h={8}/>
             {room.name}
         </Box>
     )
 }
-
-
-// interface Room {
-//     id:string
-//     members:string[]
-// }
-
 
 const Rooms = ():JSX.Element => {
     const [rooms,setRooms] = useState<Room[]>([])
@@ -61,7 +56,7 @@ const Rooms = ():JSX.Element => {
     },[rooms])
 
     const roomList = rooms.map((room,idx)=><RoomItem key={idx} room={room}/>)
-    const viewArea = status === 'success' ? roomList : <p>{status}</p>
+    const viewArea = status === 'success' ? <Box overflowX='scroll' h={window.innerHeight-50+'px'}>{roomList}</Box> : <p>{status}</p>
     const createRoom = () => {}
 
 
