@@ -1,25 +1,25 @@
 import {firestore} from '../../firebase'
-import {useState,useEffect} from 'react'
-import {Box,Button} from '@chakra-ui/react'
+import {useState,useEffect,Suspense} from 'react'
+import {Box,Button,SimpleGrid} from '@chakra-ui/react'
 import Header from '../../components/Header'
-import {Input,InputGroup,InputLeftElement} from '@chakra-ui/react'
-import {Search2Icon,LockIcon} from '@chakra-ui/icons'
+import SearchInput from '../../components/ui/SearchInput'
+import {LockIcon} from '@chakra-ui/icons'
+import {useHistory} from 'react-router-dom'
+import Center from '../../components/ui/Center'
 
-const SearchInput = ():JSX.Element => {
-    return (
-        <InputGroup w='200px' mt='5px' mr='5px'>
-            <InputLeftElement>
-                <Search2Icon />
-            </InputLeftElement>
-            <Input  w='100%' bgColor='#E9EFF4'></Input>
-        </InputGroup>
-    )
-}
+
+// TODO room内にmemberサブコレクションを作成し、階層構造にする（Firebase側で管理する）
 
 interface Room {
-    name:string,
-    members:string[]
+    id:string
+    name:string
+    members:Member[]
     password:string
+}
+
+interface Member{
+    id:string
+    name:string
 }
 
 interface RoomItemProps{
@@ -27,12 +27,21 @@ interface RoomItemProps{
 }
 
 const RoomItem:React.FC<RoomItemProps> = (props:RoomItemProps) => {
+    const history = useHistory()
     const {room} = props
+    const gotoRoom = (id:string) => {
+        history.push('/room/'+id)
+    }
     return (
-        <Box shadow='md' m='10px' border='1px solid #DDD' borderRadius='5px' p='30px 10px'>
-            <LockIcon color={room.password !== '' ?'#5F65CC':'white'} w={12} h={8}/>
-            {room.name}
-        </Box>
+        <SimpleGrid shadow='md' m='10px' border='1px solid #DDD' borderRadius='5px' p='25px 10px' columns={2} onClick={()=>gotoRoom(room.id)}>
+            <Box display='flex'>
+                <LockIcon color={room.password !== '' ?'#5F65CC':'white'} w={12} h={8} />
+                {room.name}
+            </Box>
+            <SimpleGrid columns={2}>
+                {room.members.map(member=><Box key={member.id}><Suspense fallback={<p>loading...</p>}>{member.id}</Suspense></Box>)}
+            </SimpleGrid>
+        </SimpleGrid>
     )
 }
 
@@ -43,20 +52,40 @@ const Rooms = ():JSX.Element => {
         const f = async()=>{
             const roomList:Room[] = []
             const res = await firestore.collection('rooms').get()
-            res.forEach(room=>roomList.push(room.data() as Room))
+            res.forEach(room=>{
+                const roomData = {id:room.id,...room.data()}
+                roomList.push(roomData as Room)
+            })
             setStatus((roomList.length > 0) ? 'success' : 'no room')
             setRooms(roomList)
-            console.log(roomList)
-            console.log(rooms)
          }
          f()
     },[])
-    useEffect(()=>{
-        console.log('rooms更新：',rooms)
-    },[rooms])
+
+    // roomsが更新されたとき、メンバー情報を取得しにいく → やめる、サブコレクションごとGETする
+    // useEffect(()=>{
+    //     const f = async()=>{
+    //         console.log('ここ来てる')
+    //         // const members:Member[] = []
+    //         rooms.forEach(async(room)=>{
+    //             console.log('ここまわる')
+    //             const member = await room.members.map((memberId) => {
+    //                 // const res = await firestore.collection('users').doc(memberId).get()
+    //                 // console.log({id:res.id,...res.data()})
+    //                 return {id: "hQsnf4bY0P4RdMP3N12H", name: "たろう"}
+    //                 // return {id:res.id,...res.data()}
+    //             })
+    //             console.log({member})
+    //         })
+    //     }
+    //     if(rooms.length > 0){
+    //         f()
+    //     }
+    // },[rooms])
+    
 
     const roomList = rooms.map((room,idx)=><RoomItem key={idx} room={room}/>)
-    const viewArea = status === 'success' ? <Box overflowX='scroll' h={window.innerHeight-50+'px'}>{roomList}</Box> : <p>{status}</p>
+    const viewArea = status === 'success' ? <Box overflowX='scroll' h={window.innerHeight-50+'px'}>{roomList}</Box> : <Center><p>{status}</p></Center>
     const createRoom = () => {}
 
 
