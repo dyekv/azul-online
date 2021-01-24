@@ -49,7 +49,7 @@ const Rooms = ():JSX.Element => {
     const [rooms,setRooms] = useState<Room[]>([])
     const [status,setStatus] = useState('loading')
     useEffect(()=>{
-        const f = async()=>{
+        const getRooms = async()=>{
             const roomList:Room[] = []
             const res = await firestore.collection('rooms').get()
             res.forEach(room=>{
@@ -59,7 +59,16 @@ const Rooms = ():JSX.Element => {
             setStatus((roomList.length > 0) ? 'success' : 'no room')
             setRooms(roomList)
          }
-         f()
+         getRooms()
+         const SubscribeRooms = ()=>{
+            firestore.collection('rooms').onSnapshot(()=>{
+                getRooms()
+            })
+         }
+         SubscribeRooms()
+         return ()=>{
+             SubscribeRooms()
+         }
     },[])
 
     // roomsが更新されたとき、メンバー情報を取得しにいく → やめる、サブコレクションごとGETする
