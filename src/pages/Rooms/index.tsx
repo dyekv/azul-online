@@ -1,5 +1,5 @@
 import {firestore} from '../../firebase'
-import {useState,useEffect,Suspense} from 'react'
+import {useState,useEffect} from 'react'
 import {Box,Button,SimpleGrid} from '@chakra-ui/react'
 import Header from '../../components/Header'
 import SearchInput from '../../components/ui/SearchInput'
@@ -39,7 +39,7 @@ const RoomItem:React.FC<RoomItemProps> = (props:RoomItemProps) => {
                 {room.name}
             </Box>
             <SimpleGrid columns={2}>
-                {room.members.map(member=><Box key={member.id}><Suspense fallback={<p>loading...</p>}>{member.id}</Suspense></Box>)}
+                {room.members.map(member=><Box key={member.id}>{member.name}</Box>)}
             </SimpleGrid>
         </SimpleGrid>
     )
