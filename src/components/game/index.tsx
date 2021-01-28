@@ -1,5 +1,6 @@
 import React,{useState,useEffect} from 'react'
 import Center from '../ui/Center'
+import {Image} from '@chakra-ui/react'
 
 interface Wall {
     "1":string[]
@@ -78,13 +79,17 @@ const GameComponent:React.FC<Props> = ({players}) => {
         initialize()
     },[])
 
+    const viewTable = (table:string[]) => {
+        return table.map((tile,idx)=><Image key={idx} src={process.env.PUBLIC_URL+'/'+tile+'.png'} alt='logo' maxW='40px'/>)
+    }
+
     if(game.status === 'notStarted'){
         return (<Center>Loading ...</Center>)
     }
     if(game.status === 'selectTable'){
         return (
             <div>
-                {game.field.tables.map((table,idx)=><div key={idx}>{table}</div>)}
+                {game.field.tables.map((table,idx)=><div key={idx} style={{display:'flex',margin:20}}>{viewTable(table)}</div>)}
             </div>
         )
     }
