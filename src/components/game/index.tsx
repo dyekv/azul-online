@@ -1,6 +1,13 @@
 import React,{useState,useEffect} from 'react'
 import Center from '../ui/Center'
 import {Image} from '@chakra-ui/react'
+import {
+    Modal,
+    ModalOverlay,
+    ModalContent,
+    ModalBody,
+    Box
+  } from "@chakra-ui/react"
 
 interface Wall {
     "1":string[]
@@ -46,6 +53,7 @@ interface Player {
 
 const GameComponent:React.FC<Props> = ({players}) => {
     const [game,setGame] = useState<Game>({status:'notStarted'} as Game)
+    const [selectTable,setSelectTable] = useState<number>(-1)
 
     const initialField = () => {
         const center = ['first']
@@ -83,13 +91,47 @@ const GameComponent:React.FC<Props> = ({players}) => {
         return table.map((tile,idx)=><Image key={idx} src={process.env.PUBLIC_URL+'/'+tile+'.png'} alt='logo' maxW='40px'/>)
     }
 
+    const chooseTile = (tileIndex:number) => {
+        if(selectTable === -1){
+            return null
+        }
+        alert(game.field.tables[selectTable][tileIndex])
+    }
+
     if(game.status === 'notStarted'){
         return (<Center>Loading ...</Center>)
     }
     if(game.status === 'selectTable'){
         return (
             <div>
-                {game.field.tables.map((table,idx)=><div key={idx} style={{display:'flex',margin:20}}>{viewTable(table)}</div>)}
+                {game.field.tables.map((table,idx)=><div key={idx} onClick={()=>setSelectTable(idx)} style={{display:'flex',margin:20,maxWidth:'160px'}}>{viewTable(table)}</div>)}
+                <Modal isOpen={selectTable > 0} onClose={()=>setSelectTable(-1)}>
+                    <ModalOverlay />
+                    <ModalContent>
+                    <ModalBody>
+                        <Box h="60vh">
+                            {selectTable > 0 ? 
+                                <Box display='flex'>
+                                    {game.field.tables[selectTable].map((tile,idx)=> (
+                                        <div
+                                            onClick={()=>chooseTile(idx)}
+                                            style={{margin:'20px 5px'}} 
+                                            key={idx} 
+                                        >
+                                            <Image 
+                                                src={process.env.PUBLIC_URL+'/'+tile+'.png'} 
+                                                alt='logo' 
+                                                maxW='80px'
+                                            />
+                                        </div>
+                                    ))}
+                                </Box>
+                                : ''
+                            }
+                        </Box>
+                    </ModalBody>
+                    </ModalContent>
+                </Modal>
             </div>
         )
     }
