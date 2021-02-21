@@ -95,7 +95,13 @@ const GameComponent:React.FC<Props> = ({players}) => {
         if(selectTable === -1){
             return null
         }
-        alert(game.field.tables[selectTable][tileIndex])
+        const copyTable = game.field.tables[selectTable].map(tile=>tile)
+        console.log(copyTable)
+        const selectTile = copyTable.splice(tileIndex,1)
+        // Todo Tablesから選択したTableを削除
+        // Todo 選択したタイルをプレイヤーの手持ちに追加
+        // Todo 選択したタイル以外のタイルをfield.centerに追加
+        console.log(selectTile)
     }
 
     if(game.status === 'notStarted'){
